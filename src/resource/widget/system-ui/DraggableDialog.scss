@@ -1,0 +1,14 @@
+.MuiPopover-paper {
+  overflow-x: inherit !important;
+  overflow-y: inherit !important;
+}
+
+.MuiDialogContent-root {
+  overflow-x: inherit !important;
+  overflow-y: auto !important;
+}
+
+.MuiDialogContent-root  .react-bootstrap-table {
+  max-height: 400px;
+  overflow-y: auto !important;
+}

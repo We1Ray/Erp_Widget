@@ -1,0 +1,58 @@
+/*checkBox radioButton設定*/
+.yz-xform-field-checkradio-item-wrap label {
+  /*未勾選樣式*/
+  display: inline-block;
+  background-color: #ffffff;
+  border: 0px;
+  font-family: Microsoft JhengHei;
+  color: #485157;
+  font-size: 14px;
+  font-weight: bolder;
+  border-radius: 10px;
+  white-space: nowrap;
+  margin: 3px 0px;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: all 0.2s;
+  padding: 10px 8px;
+  cursor: pointer;
+}
+.yz-xform-field-checkradio-item-wrap label::after {
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  font-size: 12px;
+  color: #eeeeee;
+  content: "X";
+  transition: transform 0.3s ease-in-out;
+}
+/*checkbox選取後轉換動作*/
+.yz-xform-field-checkradio-item-wrap input:checked + label::after {
+  content: "V";
+  transform: rotate(-360deg);
+  transition: transform 0.3s ease-in-out;
+}
+.yz-xform-field-checkradio-item-wrap input:checked + label {
+  border: 0px;
+  background-color: #00afec;
+  color: #ffffff;
+  transition: all 0.2s;
+}
+.yz-xform-field-checkradio-item-wrap input {
+  display: absolute;
+  position: absolute;
+  opacity: 0;
+}
+
+.yz-xform-field-repeater-cnt td {
+  display: table-cell !important;
+  float: left;
+}
