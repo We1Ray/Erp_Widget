@@ -317,10 +317,10 @@ export const BindDatetimeBox: React.FC<DatetimeBoxProps> = forwardRef(
                 <MaskedInput
                   mask={mask}
                   style={{ backgroundColor: backColor }}
-                  {...props}
                 />
               }
               popperContainer={CalendarContainer}
+              {...props}
             />
           </>
         ) : (

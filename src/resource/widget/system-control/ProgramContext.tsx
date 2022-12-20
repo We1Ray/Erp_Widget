@@ -76,7 +76,11 @@ interface ProgramProps {
     /**
      * 判斷那些查詢條件需要加入
      */
-    queryConditions: any;
+    queryConditions: {
+      value: string;
+      label: string;
+      isFixed: boolean;
+    }[];
     /**
      * 是否為獨立作業(不受Component內其他Program的狀態影響)
      */
@@ -84,16 +88,6 @@ interface ProgramProps {
   };
   ProgramDispatch?: any;
 }
-
-interface statusProps {
-  /**
-   * 作業的狀態，有 READ、QUERY、CREATE、UPDATE、DELETE、SAVE、CANCEL
-   */
-  status: any;
-  send?: any;
-  service?: any;
-}
-
 const STATUS = {
   READ: "READ",
   QUERY: "QUERY",
@@ -106,7 +100,14 @@ const STATUS = {
 const ProgramContext = React.createContext<ProgramProps>({
   Program: ProgramInitialState,
 });
-const statusContext = React.createContext<statusProps>({
+const statusContext = React.createContext<{
+  /**
+   * 作業的狀態，有 READ、QUERY、CREATE、UPDATE、DELETE、SAVE、CANCEL
+   */
+  status: any;
+  send?: any;
+  service?: any;
+}>({
   status: STATUS.READ,
 });
 /**

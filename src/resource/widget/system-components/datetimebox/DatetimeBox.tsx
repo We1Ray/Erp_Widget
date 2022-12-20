@@ -9,6 +9,22 @@ import { QryDatetimeBox } from "./QryDatetimeBox";
 import { BindDatetimeBox } from "./BindDatetimeBox";
 import { CommonDatetimeBox } from "./CommonDatetimeBox";
 interface DatetimeBoxProps {
+  visible?: boolean;
+  disabled?: boolean;
+  bind?: boolean;
+  query?: boolean;
+  name?: string;
+  defaultValue?: Date;
+  value?: Date;
+  handleValidation?: (value: any) => Promise<string>;
+  format: string;
+  mask: string;
+  result?: (value: Date) => any | ((value: Date) => Promise<any>);
+  ref?: React.Ref<any>;
+  [x: string]: any;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+const DatetimeBox: React.FC<{
   /**
    * 判斷是否可視 初始值為true
    */
@@ -60,8 +76,7 @@ interface DatetimeBoxProps {
 
   [x: string]: any;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-const DatetimeBox: React.FC<DatetimeBoxProps> = forwardRef(
+}> = forwardRef(
   (
     {
       visible,

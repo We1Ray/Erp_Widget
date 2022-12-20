@@ -10,7 +10,11 @@ import { SystemContext } from "../../system-control/SystemContext";
 import { ProgramContext } from "../../system-control/ProgramContext";
 import PublicMethod from "../../../methods/PublicMethod";
 import { CommonSelectionBox } from "../selectionbox/CommonSelectionBox";
-interface Props {
+
+/**
+ * 查詢條件選單功能
+ */
+export const QueryPattern: React.FC<{
   /**
    * 預設查詢條件
    */
@@ -44,8 +48,7 @@ interface Props {
    */
   ref?: React.Ref<any>;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-export const QueryPattern: React.FC<Props> = forwardRef(
+}> = forwardRef(
   ({ defaultValue, options, callbackRef, ...props }, forwardedRef) => {
     const { System } = useContext(SystemContext);
     const { Program, ProgramDispatch } = useContext(ProgramContext);

@@ -25,6 +25,7 @@ export { TextQryBox } from "./resource/widget/system-components/textqryBox/TextQ
 export { Tree } from "./resource/widget/system-components/treeview/TreeView";
 
 export { System } from "./resource/widget/system-control/System_Login";
+// export { System } from "./widget/system-control/System";
 export { Form } from "./resource/widget/system-control/Form";
 export {
   SystemContext,
@@ -48,4 +49,4 @@ export {
 } from "./resource/methods/PublicMethod";
 export { default as SystemFunc } from "./resource/methods/SystemFunc";
 export { default as CallApi } from "./resource/api/CallApi";
-export { default as useLatest } from "./resource/methods/useLatest/index";
+export { default as useLatest } from "./resource/methods/useLatest";

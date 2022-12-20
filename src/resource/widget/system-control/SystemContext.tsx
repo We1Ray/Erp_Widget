@@ -8,6 +8,11 @@ const SystemInitialState = {
     name: "",
     ip: "",
   },
+  system_info: {
+    system_uid: "",
+    system_name: "",
+    system_desc: "",
+  },
   userstate: "",
   mustlogin: false,
   lang: "TW",
@@ -35,6 +40,14 @@ interface SystemProps {
       uid: string;
       name: string;
       ip: string;
+    };
+    /**
+     * 系統資訊
+     */
+    system_info: {
+      system_uid: string;
+      system_name: string;
+      system_desc: string;
     };
     /**
      * 登入者狀態
@@ -109,6 +122,8 @@ const SystemReducer = (state, action) => {
       return { ...state, system_uid: action.value };
     case "factory":
       return { ...state, factory: action.value };
+    case "system_info":
+      return { ...state, system_info: action.value };
     case "userstate":
       return { ...state, userstate: action.value };
     case "mustlogin":

@@ -8,11 +8,26 @@ import PublicMethod from "../../../methods/PublicMethod";
 import { QryTextBox } from "./QryTextBox";
 import { BindTextBox } from "./BindTextBox";
 import { CommonTextBox } from "./CommonTextBox";
-/**
- * TextBox
- * bind和query擇一設定參數
- */
+
 interface TextBoxProps {
+  visible?: boolean;
+  disabled?: boolean;
+  bind?: boolean;
+  query?: boolean;
+  name?: string;
+  maxLength?: number;
+  defaultValue?: string;
+  value?: string;
+  handleValidation?: (value: any) => Promise<string>;
+  area?: boolean;
+  style?: React.CSSProperties;
+  result?: (value: string) => any | ((value: string) => Promise<any>);
+  ref?: React.Ref<any>;
+  [x: string]: any;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+
+const TextBox: React.FC<{
   /**
    * 判斷是否可視 初始值為true
    */
@@ -68,8 +83,7 @@ interface TextBoxProps {
 
   [x: string]: any;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-const TextBox: React.FC<TextBoxProps> = forwardRef(
+}> = forwardRef(
   (
     {
       visible,

@@ -12,7 +12,10 @@ import {
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
 
-interface Props {
+/**
+ * BtnDelete 刪除按鈕，按下後會改變狀態刪除資料
+ */
+export const BtnDelete: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -57,11 +60,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnDelete 刪除按鈕，按下後會改變狀態刪除資料
- */
-export const BtnDelete: React.FC<Props> = ({
+}> = ({
   disableFilter,
   multiple,
   beforeDoDelete,

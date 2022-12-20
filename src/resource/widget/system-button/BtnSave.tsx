@@ -8,7 +8,11 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
-interface Props {
+
+/**
+ * BtnSave 儲存按鈕，按下後會改變狀態讓資料儲存
+ */
+export const BtnSave: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -29,17 +33,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnSave 儲存按鈕，按下後會改變狀態讓資料儲存
- */
-export const BtnSave: React.FC<Props> = ({
-  disableFilter,
-  style,
-  childObject,
-  onClick,
-  title,
-}) => {
+}> = ({ disableFilter, style, childObject, onClick, title }) => {
   const { System } = useContext(SystemContext);
   const { Program } = useContext(ProgramContext);
   const { status, send } = useContext(statusContext);

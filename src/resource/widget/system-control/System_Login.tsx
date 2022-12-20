@@ -185,6 +185,25 @@ const SystemContent: React.FC<Props> = ({ system_uid, ...props }) => {
             console.log("EROOR: SystemFunc.get_account_permissions");
             console.log(error);
           });
+
+        CallApi.ExecuteApi(
+          CENTER_FACTORY,
+          CENTER_IP + "/system/get_system_info",
+          {
+            access_token: token,
+            system_uid: System.system_uid,
+            location: System.lang,
+          }
+        )
+          .then((res) => {
+            if (res.data) {
+              SystemDispatch({ type: "system_info", value: res.data });
+            }
+          })
+          .catch((error) => {
+            console.log("EROOR: SystemFunc.get_system_info");
+            console.log(error);
+          });
       }
     } catch (error) {
       console.log(error);

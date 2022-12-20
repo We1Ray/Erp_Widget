@@ -3,8 +3,12 @@ import { ComponentContext } from "./ComponentContext";
 import { ProgramContext, statusContext, STATUS } from "./ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import { None } from "../system-ui/None";
-import { SystemContext } from "../system-control/SystemContext";
-interface Props {
+import { SystemContext } from "./SystemContext";
+
+/**
+ * Form 作業的主行程，會預先載入作業的初始資料和狀態
+ */
+export const Form: React.FC<{
   /**
    * 作業名稱
    */
@@ -21,17 +25,7 @@ interface Props {
    * 設定外觀
    */
   style?: React.CSSProperties; //設定額外的style參數
-}
-/**
- * Form 作業的主行程，會預先載入作業的初始資料和狀態
- */
-export const Form: React.FC<Props> = ({
-  program_code,
-  dataKey,
-  individual,
-  style,
-  ...props
-}) => {
+}> = ({ program_code, dataKey, individual, style, ...props }) => {
   const { System } = useContext(SystemContext);
   const { Component, ComponentDispatch } = useContext(ComponentContext);
   const { status, send, service } = useContext(statusContext);

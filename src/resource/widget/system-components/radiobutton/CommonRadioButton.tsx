@@ -6,10 +6,9 @@ import React, {
   forwardRef,
 } from "react";
 import PublicMethod from "../../../methods/PublicMethod";
-import { Input, Col } from "reactstrap";
-import { Row } from "../../system-ui/Row";
+import { Input } from "reactstrap";
 import { None } from "../../system-ui/None";
-import { RadioButtonProps } from "./RadioButton";
+import { RadioButtonProps, option } from "./RadioButton";
 
 export const CommonRadioButton: React.FC<RadioButtonProps> = forwardRef(
   (
@@ -21,6 +20,7 @@ export const CommonRadioButton: React.FC<RadioButtonProps> = forwardRef(
       handleValidation,
       options,
       optionColumnProportion,
+      orientation,
       result,
       callbackRef,
       ...props
@@ -148,27 +148,32 @@ export const CommonRadioButton: React.FC<RadioButtonProps> = forwardRef(
     let Selection = [];
     for (let index = 0; index < options.length; index++) {
       Selection.push(
-        <Col
-          md={
-            PublicMethod.checkValue(optionColumnProportion)
-              ? optionColumnProportion
-              : 1
+        <label
+          className="c-radio"
+          style={
+            PublicMethod.checkValue(orientation)
+              ? orientation === "vertical"
+                ? { display: "block" }
+                : { display: "inline-block" }
+              : { display: "inline-block" }
           }
         >
-          <label className="c-radio">
-            <Input
-              type="radio"
-              disabled={InputDisable(
-                options[index].disabled,
-                radioButtonDisable
-              )}
-              onChange={() => changeValue(options[index].value)}
-              checked={options[index].value === radioButtonValue}
-            />
-            <span className="fa fa-check" />
-            <p style={options[index].style}>{options[index].text}</p>
-          </label>
-        </Col>
+          <Input
+            type="radio"
+            disabled={InputDisable(options[index].disabled, radioButtonDisable)}
+            onChange={() => changeValue(options[index].value)}
+            checked={options[index].value === radioButtonValue}
+          />
+          <span className="fa fa-check" />
+          <div
+            style={{
+              ...{ display: "inline-block" },
+              ...options[index].style,
+            }}
+          >
+            {options[index].text}
+          </div>
+        </label>
       );
     }
 
@@ -176,9 +181,9 @@ export const CommonRadioButton: React.FC<RadioButtonProps> = forwardRef(
       <>
         {display ? (
           <>
-            <Row ref={radioButtonRef} {...props}>
+            <div ref={radioButtonRef} {...props}>
               {Selection}
-            </Row>
+            </div>
           </>
         ) : (
           <None />

@@ -4,13 +4,12 @@ import PublicMethod from "../../methods/PublicMethod";
 /**
  * Block 區塊畫面，可在底下放置所需的子元件
  */
-interface Props {
+export const Block: React.FC<{
   /**
    * 區塊顯示名稱
    */
   head?: string;
-}
-export const Block: React.FC<Props> = ({ head, ...props }) => {
+}> = ({ head, ...props }) => {
   let body = [];
   body.push(
     <form className="form-horizontal">

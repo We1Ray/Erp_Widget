@@ -8,7 +8,37 @@ import PublicMethod from "../../../methods/PublicMethod";
 import { QryRadioButton } from "./QryRadioButton";
 import { BindRadioButton } from "./BindRadioButton";
 import { CommonRadioButton } from "./CommonRadioButton";
+import { None } from "../../system-ui/None";
+
+type Orientation = "vertical" | "horizontal";
+
+interface option {
+  value: string;
+  text: string;
+  disabled?: boolean;
+  style?: React.CSSProperties;
+}
 interface RadioButtonProps {
+  visible?: boolean;
+  disabled?: boolean;
+  bind?: boolean;
+  query?: boolean;
+  name?: string;
+  defaultValue?: string;
+  handleValidation?: (value: any) => Promise<string>;
+  options: option[]; //選項
+  value?: string;
+  orientation?: Orientation;
+  result?: (
+    value: string,
+    text?: string
+  ) => any | ((value: string, text?: string) => Promise<any>);
+  ref?: React.Ref<any>;
+  [x: string]: any;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+
+const RadioButton: React.FC<{
   /**
    * 判斷是否可視 初始值為true
    */
@@ -51,9 +81,9 @@ interface RadioButtonProps {
    */
   value?: string;
   /**
-   * 選項在畫面中的比例同Col的使用方式
+   * 選項在畫面排列方向
    */
-  optionColumnProportion: number;
+  orientation?: Orientation;
   /**
    * 元件回傳目前的值
    */
@@ -68,8 +98,7 @@ interface RadioButtonProps {
 
   [x: string]: any;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-const RadioButton: React.FC<RadioButtonProps> = forwardRef(
+}> = forwardRef(
   (
     {
       visible,
@@ -81,7 +110,7 @@ const RadioButton: React.FC<RadioButtonProps> = forwardRef(
       value,
       handleValidation,
       options,
-      optionColumnProportion,
+      orientation,
       result,
       callbackRef,
       ...props
@@ -104,51 +133,55 @@ const RadioButton: React.FC<RadioButtonProps> = forwardRef(
     });
     return (
       <>
-        {query ? (
-          <QryRadioButton
-            visible={visible}
-            disabled={disabled}
-            name={name}
-            defaultValue={defaultValue}
-            value={value}
-            handleValidation={handleValidation}
-            options={options}
-            optionColumnProportion={optionColumnProportion}
-            result={result}
-            ref={radioButtonRef}
-            {...props}
-          />
-        ) : bind ? (
-          <BindRadioButton
-            visible={visible}
-            disabled={disabled}
-            name={name}
-            defaultValue={defaultValue}
-            value={value}
-            handleValidation={handleValidation}
-            options={options}
-            optionColumnProportion={optionColumnProportion}
-            result={result}
-            ref={radioButtonRef}
-            {...props}
-          />
+        {options ? (
+          query ? (
+            <QryRadioButton
+              visible={visible}
+              disabled={disabled}
+              name={name}
+              defaultValue={defaultValue}
+              value={value}
+              handleValidation={handleValidation}
+              options={options}
+              orientation={orientation}
+              result={result}
+              ref={radioButtonRef}
+              {...props}
+            />
+          ) : bind ? (
+            <BindRadioButton
+              visible={visible}
+              disabled={disabled}
+              name={name}
+              defaultValue={defaultValue}
+              value={value}
+              handleValidation={handleValidation}
+              options={options}
+              orientation={orientation}
+              result={result}
+              ref={radioButtonRef}
+              {...props}
+            />
+          ) : (
+            <CommonRadioButton
+              visible={visible}
+              disabled={disabled}
+              defaultValue={defaultValue}
+              value={value}
+              handleValidation={handleValidation}
+              options={options}
+              orientation={orientation}
+              result={result}
+              ref={radioButtonRef}
+              {...props}
+            />
+          )
         ) : (
-          <CommonRadioButton
-            visible={visible}
-            disabled={disabled}
-            defaultValue={defaultValue}
-            value={value}
-            handleValidation={handleValidation}
-            options={options}
-            optionColumnProportion={optionColumnProportion}
-            result={result}
-            ref={radioButtonRef}
-            {...props}
-          />
+          <None />
         )}
       </>
     );
   }
 );
 export { RadioButton };
-export type { RadioButtonProps };
+export type { RadioButtonProps, Orientation, option };

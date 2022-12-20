@@ -13,7 +13,7 @@ import { None } from "./None";
 /**
  * Row
  */
-interface Props {
+export const Row: React.FC<{
   /**
    * 設定是否可視
    */
@@ -28,40 +28,37 @@ interface Props {
    */
   ref?: React.Ref<any>;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-export const Row: React.FC<Props> = forwardRef(
-  ({ visible, name, callbackRef, ...props }, forwardedRef) => {
-    const { Program } = useContext(ProgramContext);
-    const [display, setDisplay] = useState(true);
-    const rowRef = useRef(null);
+}> = forwardRef(({ visible, name, callbackRef, ...props }, forwardedRef) => {
+  const { Program } = useContext(ProgramContext);
+  const [display, setDisplay] = useState(true);
+  const rowRef = useRef(null);
 
-    useImperativeHandle(forwardedRef, () => rowRef.current);
+  useImperativeHandle(forwardedRef, () => rowRef.current);
 
-    /** 設定欄位是否可視 */
-    useEffect(() => {
-      try {
-        setDisplay(
-          PublicMethod.visibility(name, Program.queryConditions, visible)
-        );
-        if (PublicMethod.checkValue(callbackRef)) {
-          callbackRef(rowRef);
-        }
-      } catch (error) {
-        console.log("EROOR: Row.useEffect()");
-        console.log(error);
+  /** 設定欄位是否可視 */
+  useEffect(() => {
+    try {
+      setDisplay(
+        PublicMethod.visibility(name, Program.queryConditions, visible)
+      );
+      if (PublicMethod.checkValue(callbackRef)) {
+        callbackRef(rowRef);
       }
-    });
+    } catch (error) {
+      console.log("EROOR: Row.useEffect()");
+      console.log(error);
+    }
+  });
 
-    return (
-      <>
-        {display ? (
-          <Roa ref={rowRef} {...props}>
-            {props.children}
-          </Roa>
-        ) : (
-          <None />
-        )}
-      </>
-    );
-  }
-);
+  return (
+    <>
+      {display ? (
+        <Roa ref={rowRef} {...props}>
+          {props.children}
+        </Roa>
+      ) : (
+        <None />
+      )}
+    </>
+  );
+});

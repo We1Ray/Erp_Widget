@@ -45,18 +45,13 @@ const DraggableGrow: React.FC<DraggableGrowProps> = ({
 //     },
 //   },
 // });
-interface Props {
+
+export const DraggableDialog: React.FC<{
   open: boolean;
   style?: React.CSSProperties;
   contentStyle?: React.CSSProperties;
   [x: string]: any;
-}
-export const DraggableDialog: React.FC<Props> = ({
-  open,
-  style,
-  contentStyle,
-  ...props
-}) => {
+}> = ({ open, style, contentStyle, ...props }) => {
   const dialogRef = useRef(null);
   // const classes = useStyles();
 

@@ -42,7 +42,7 @@ import useLatest from "../../methods/useLatest";
 //         </div>
 //     );
 // }
-interface Props {
+export const BtnExcelImport: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -67,15 +67,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-export const BtnExcelImport: React.FC<Props> = ({
-  disableFilter,
-  style,
-  childObject,
-  importData,
-  onClick,
-  title,
-}) => {
+}> = ({ disableFilter, style, childObject, importData, onClick, title }) => {
   const { System } = useContext(SystemContext);
   const { Component } = useContext(ComponentContext);
   const { Program } = useContext(ProgramContext);

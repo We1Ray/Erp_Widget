@@ -7,7 +7,10 @@ import {
   STATUS,
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
-interface Props {
+/**
+ * BtnCancel 取消按鈕，按下後會改變狀態為Read
+ */
+export const BtnCancel: React.FC<{
   /**
    * 設定外觀
    */
@@ -25,16 +28,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnCancel 取消按鈕，按下後會改變狀態為Read
- */
-export const BtnCancel: React.FC<Props> = ({
-  style,
-  childObject,
-  onClick,
-  title,
-}) => {
+}> = ({ style, childObject, onClick, title }) => {
   const { System } = useContext(SystemContext);
   const { Program, ProgramDispatch } = useContext(ProgramContext);
   const { status, send } = useContext(statusContext);

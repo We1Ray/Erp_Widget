@@ -11,6 +11,26 @@ import { BindTreeView } from "./BindTreeView";
 import { CommonTreeView } from "./CommonTreeView";
 
 interface TreeViewProps {
+  height?: number | string;
+  width?: number | string;
+  disabled?: boolean;
+  bind?: boolean;
+  data: TreeViewitem[];
+  onClickValue?: (arg: any) => void;
+  onDoubleClickValue?: (arg: any) => void;
+  ref?: React.Ref<any>;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+interface TreeViewitem {
+  id: string;
+  label: string;
+  icon: string;
+  data: any;
+  children?: any;
+  expand?: string;
+}
+
+const Tree: React.FC<{
   /**
    * 設定高度
    */
@@ -30,7 +50,14 @@ interface TreeViewProps {
   /**
    * 給予Tree的資料
    */
-  data: TreeViewitem[];
+  data: {
+    id: string;
+    label: string;
+    icon: string;
+    data: any;
+    children?: any;
+    expand?: string;
+  }[];
   /**
    * 點選後的事件
    */
@@ -44,16 +71,7 @@ interface TreeViewProps {
    */
   ref?: React.Ref<any>;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-interface TreeViewitem {
-  id: string;
-  label: string;
-  icon: string;
-  data: any;
-  children?: any;
-  expand?: string;
-}
-const Tree: React.FC<TreeViewProps> = forwardRef(
+}> = forwardRef(
   (
     {
       height,

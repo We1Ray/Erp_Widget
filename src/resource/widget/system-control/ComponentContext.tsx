@@ -10,8 +10,7 @@ const ComponentInitialState = {
   selectedData: {},
   selectedMultiData: [],
 };
-
-interface ComponentProps {
+const ComponentContext = React.createContext<{
   Component: {
     /**
      * 所有作業的狀態
@@ -31,9 +30,7 @@ interface ComponentProps {
     selectedMultiData: any[];
   };
   ComponentDispatch?: any;
-}
-
-const ComponentContext = React.createContext<ComponentProps>({
+}>({
   Component: ComponentInitialState,
 });
 /**

@@ -10,6 +10,48 @@ import { CommonDatatable } from "./CommonDatatable";
 import "./DataTable.scss";
 
 interface DataTableProps {
+  bind?: boolean;
+  data: object[];
+  keyField?: string;
+  columns: {
+    dataField: string;
+    text: string;
+    sort?: boolean;
+    formatter?: (
+      cell: any,
+      row: any,
+      rowIndex: any,
+      formatExtraData: any
+    ) => JSX.Element;
+    hidden?: boolean;
+    align?: string;
+    [x: string]: any;
+  }[];
+  Expand?: ({ row }: { row: any }) => JSX.Element;
+  dialog?: {
+    content: JSX.Element;
+    style?: React.CSSProperties;
+  };
+  multipleSelection?: boolean;
+  sizePerPageList?: object;
+  [x: string]: any;
+  ref?: React.Ref<any>;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+interface SelectNode {
+  mode?: string;
+  hideSelectColumn?: boolean;
+  clickToSelect?: boolean;
+  bgColor?: string;
+  selected?: object;
+  onSelect?: (arg1: any, arg2: any) => void;
+  onSelectAll?: (arg1: any, arg2: any) => void;
+}
+
+/**
+ * DataTable，可參考:https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#columns-required-object
+ */
+const DataTable: React.FC<{
   /**
    * 是否綁定目前作業
    */
@@ -62,21 +104,7 @@ interface DataTableProps {
   [x: string]: any;
   ref?: React.Ref<any>;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-interface SelectNode {
-  mode?: string;
-  hideSelectColumn?: boolean;
-  clickToSelect?: boolean;
-  bgColor?: string;
-  selected?: object;
-  onSelect?: (arg1: any, arg2: any) => void;
-  onSelectAll?: (arg1: any, arg2: any) => void;
-}
-
-/**
- * DataTable，可參考:https://react-bootstrap-table.github.io/react-bootstrap-table2/docs/table-props.html#columns-required-object
- */
-const DataTable: React.FC<DataTableProps> = forwardRef(
+}> = forwardRef(
   (
     {
       bind,

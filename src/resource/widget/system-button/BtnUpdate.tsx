@@ -11,7 +11,11 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
-interface Props {
+
+/**
+ * BtnUpdate 更新按鈕，按下後會改變狀態讓資料更新
+ */
+export const BtnUpdate: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -52,11 +56,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnUpdate 更新按鈕，按下後會改變狀態讓資料更新
- */
-export const BtnUpdate: React.FC<Props> = ({
+}> = ({
   disableFilter,
   updateApi,
   beforeDoUpdate,

@@ -11,7 +11,10 @@ import {
 import { ComponentContext } from "../system-control/ComponentContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
-interface Props {
+/**
+ * BtnCreate 新增按鈕，按下後會改變狀態讓欄位可新增
+ */
+export const BtnCreate: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -52,11 +55,7 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnCreate 新增按鈕，按下後會改變狀態讓欄位可新增
- */
-export const BtnCreate: React.FC<Props> = ({
+}> = ({
   disableFilter,
   beforeDoCreate,
   doCreate,

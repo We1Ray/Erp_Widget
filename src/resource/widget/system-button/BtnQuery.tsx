@@ -10,7 +10,11 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
-interface Props {
+
+/**
+ * BtnQuery 查詢按鈕，按下後會改變狀態讓資料更新
+ */
+export const BtnQuery: React.FC<{
   /**
    * 設定是否可使用
    */
@@ -43,11 +47,11 @@ interface Props {
    * 滑鼠移動至按鈕顯示的字眼
    */
   title?: string;
-}
-/**
- * BtnQuery 查詢按鈕，按下後會改變狀態讓資料更新
- */
-export const BtnQuery: React.FC<Props> = ({
+  /**
+   * 設定是否初始查詢
+   */
+  initialQuery?: boolean;
+}> = ({
   style,
   disableFilter,
   queryApi,
@@ -56,6 +60,7 @@ export const BtnQuery: React.FC<Props> = ({
   childObject,
   onClick,
   title,
+  initialQuery = true,
 }) => {
   const { System } = useContext(SystemContext);
   const { Component } = useContext(ComponentContext);
@@ -63,7 +68,6 @@ export const BtnQuery: React.FC<Props> = ({
   const { Program, ProgramDispatch } = useContext(ProgramContext);
   const [queryDisable, setQueryDisable] = useState(true);
   const [queryPermission, setQueryPermission] = useState(false);
-  const [initialQuery, setInitialQuery] = useState(false);
 
   useEffect(() => {
     const flag = System.authority.filter(
@@ -117,13 +121,40 @@ export const BtnQuery: React.FC<Props> = ({
 
           if (status.matches(STATUS.READ) && !check) {
             if (Program.loading === "READ") {
-              check = !queryPermission;
+              if (PublicMethod.checkValue(Program.validation.query)) {
+                if (Program.queryConditions !== undefined) {
+                  for (
+                    let index = 0;
+                    index < Program.queryConditions.length;
+                    index++
+                  ) {
+                    if (
+                      Program.validation.query[
+                        Program.queryConditions[index].value
+                      ]
+                    ) {
+                      check = true;
+                    } else {
+                      check = !queryPermission;
+                    }
+                  }
+                } else {
+                  if (Program.validation.query) {
+                    check = true;
+                  } else {
+                    check = !queryPermission;
+                  }
+                }
+              } else {
+                check = !queryPermission;
+              }
             } else {
               check = true;
             }
           } else {
             check = true;
           }
+
           if (latest()) {
             setQueryDisable(check);
           }
@@ -138,6 +169,8 @@ export const BtnQuery: React.FC<Props> = ({
       JSON.stringify(Component.status),
       JSON.stringify(Component.loading),
       JSON.stringify(Program.selectedData),
+      JSON.stringify(Program.validation.query),
+      JSON.stringify(Program.queryConditions),
       Program.individual,
       Program.loading,
       status,
@@ -325,14 +358,10 @@ export const BtnQuery: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    if (
-      System.factory.name &&
-      System.factory.ip &&
-      queryPermission &&
-      !initialQuery
-    ) {
-      send(STATUS.QUERY);
-      setInitialQuery(true);
+    if (System.factory.name && System.factory.ip && queryPermission) {
+      if (initialQuery) {
+        send(STATUS.QUERY);
+      }
     }
   }, [JSON.stringify(System.factory), queryPermission]);
 

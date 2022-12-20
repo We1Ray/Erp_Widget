@@ -10,6 +10,26 @@ import { BindCheckBox } from "./BindCheckBox";
 import { CommonCheckBox } from "./CommonCheckBox";
 
 interface CheckBoxProps {
+  visible?: boolean;
+  disabled?: boolean;
+  bind?: boolean;
+  query?: boolean;
+  name?: string;
+  defaultValue?: string;
+  value?: string;
+  checkedText: string;
+  notCheckedText: string;
+  checkedValue: string;
+  notCheckedValue: string;
+  result?: (
+    value: string,
+    text: string
+  ) => any | ((value: string, text: string) => Promise<any>);
+  ref?: React.Ref<any>;
+  [x: string]: any;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+const CheckBox: React.FC<{
   /**
    * 判斷是否可視 初始值為true
    */
@@ -68,8 +88,7 @@ interface CheckBoxProps {
 
   [x: string]: any;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-const CheckBox: React.FC<CheckBoxProps> = forwardRef(
+}> = forwardRef(
   (
     {
       visible,

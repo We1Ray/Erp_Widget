@@ -282,18 +282,7 @@ export const CommonTextQryBox: React.FC<TextQryBoxProps> = forwardRef(
     useEffect(() => {
       try {
         if (result) {
-          result(textboxValue);
-        }
-      } catch (error) {
-        console.log("EROOR: CommonTextQryBox.useEffect[textboxValue]");
-        console.log(error);
-      }
-    }, [textboxValue]);
-
-    useEffect(() => {
-      try {
-        if (label.result) {
-          label.result(labelValue);
+          result(textboxValue, labelValue);
         }
       } catch (error) {
         console.log("EROOR: QryTextQryBox.useEffect[labelValue]");
@@ -308,7 +297,7 @@ export const CommonTextQryBox: React.FC<TextQryBoxProps> = forwardRef(
     }
 
     return (
-      <Card {...props}>
+      <div {...props}>
         {display ? (
           <>
             <Row>
@@ -340,7 +329,7 @@ export const CommonTextQryBox: React.FC<TextQryBoxProps> = forwardRef(
               {(
                 PublicMethod.checkValue(label.visible) ? label.visible : true
               ) ? (
-                <Col md={5}>
+                <Col md={(PublicMethod.checkValue(text.visible) ? text.visible : true) ? 5 : 12}>
                   <Label
                     style={label.style ? label.style : { fontWeight: "normal" }}
                   >
@@ -381,7 +370,7 @@ export const CommonTextQryBox: React.FC<TextQryBoxProps> = forwardRef(
         ) : (
           <None />
         )}
-      </Card>
+      </div>
     );
   }
 );

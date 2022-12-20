@@ -17,8 +17,9 @@ import PublicMethod from "../../../methods/PublicMethod";
 import { None } from "../../system-ui/None";
 import NoSSR from "react-no-ssr";
 import { getSelectionToData } from "./SelectionBox";
-import { SelectionBoxProps } from "./SelectionBox";
+import { SelectionBoxProps, option } from "./SelectionBox";
 import useLatest from "../../../methods/useLatest";
+import CallApi from "../../../api/CallApi";
 
 export const QrySelectionBox: React.FC<SelectionBoxProps> = forwardRef(
   (
@@ -31,6 +32,7 @@ export const QrySelectionBox: React.FC<SelectionBoxProps> = forwardRef(
       value,
       handleValidation,
       options,
+      referApi,
       multiple,
       placeholder,
       result,
@@ -42,7 +44,7 @@ export const QrySelectionBox: React.FC<SelectionBoxProps> = forwardRef(
     const { System } = useContext(SystemContext);
     const { Program, ProgramDispatch } = useContext(ProgramContext);
     const { status } = useContext(statusContext);
-    const [selectionOptions, setSelectionOptions] = useState(
+    const [selectionOptions, setSelectionOptions] = useState<option[]>(
       PublicMethod.checkValue(options) ? options : []
     );
     const [selectedValue, setSelectedValue] = useState<
@@ -87,12 +89,65 @@ export const QrySelectionBox: React.FC<SelectionBoxProps> = forwardRef(
         } else {
           setMultiSelection(false);
         }
-        setSelectionOptions(options);
+
+        if (PublicMethod.checkValue(options)) {
+          setSelectionOptions(options);
+        }
       } catch (error) {
         console.log("EROOR: QrySelectionBox.useEffect[]");
         console.log(error);
       }
     }, [options]);
+
+    useLatest(
+      (latest) => {
+        const referApiChange = async () => {
+          try {
+            if (
+              PublicMethod.checkValue(referApi) &&
+              PublicMethod.checkValue(referApi.api)
+            ) {
+              let optionApi = [];
+
+              await CallApi.ExecuteApi(
+                System.factory.name,
+                System.factory.ip + referApi.api,
+                PublicMethod.checkValue(referApi.defaultParameters)
+                  ? referApi.defaultParameters
+                  : {}
+              ).then((res) => {
+                if (PublicMethod.checkValue(res.data)) {
+                  for (let index = 0; index < res.data.length; index++) {
+                    optionApi.push({
+                      value: res.data[index][referApi.valueName],
+                      label: res.data[index][referApi.labelName],
+                    });
+                  }
+                }
+              });
+
+              if (latest()) {
+                if (multiple === true) {
+                  setMultiSelection(true);
+                } else {
+                  setMultiSelection(false);
+                }
+                setSelectionOptions(optionApi);
+              }
+            }
+          } catch (error) {
+            console.log(
+              "EROOR: BindSelectionBox.useEffect[JSON.stringify(referApi)]"
+            );
+            console.log(error);
+          }
+        };
+        if (!PublicMethod.checkValue(options)) {
+          referApiChange();
+        }
+      },
+      [JSON.stringify(options), JSON.stringify(referApi)]
+    );
 
     useEffect(() => {
       try {

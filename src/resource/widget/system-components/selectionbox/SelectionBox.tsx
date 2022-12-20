@@ -8,7 +8,61 @@ import PublicMethod from "../../../methods/PublicMethod";
 import { QrySelectionBox } from "./QrySelectionBox";
 import { BindSelectionBox } from "./BindSelectionBox";
 import { CommonSelectionBox } from "./CommonSelectionBox";
+
+interface option {
+  value: string;
+  label: string;
+  isFixed?: boolean;
+}
+interface referApi {
+  valueName: string;
+  labelName: string;
+  api?: string;
+  defaultParameters?: object;
+}
 interface SelectionBoxProps {
+  multiple: boolean;
+  options?: option[];
+  referApi?: referApi;
+  visible?: boolean;
+  disabled?: boolean;
+  bind?: boolean;
+  query?: boolean;
+  name?: string;
+  maxSelections?: number;
+  defaultValue?: {
+    value: string;
+    label: string;
+    isFixed?: boolean;
+  }[];
+  value?: {
+    value: string;
+    label: string;
+    isFixed?: boolean;
+  }[];
+  handleValidation?: (value: any) => Promise<string>;
+  placeholder?: string;
+  result?: (
+    value: {
+      value: string;
+      label: string;
+      isFixed?: boolean;
+    }[]
+  ) =>
+    | any
+    | ((
+        value: {
+          value: string;
+          label: string;
+          isFixed?: boolean;
+        }[]
+      ) => Promise<any>);
+  ref?: React.Ref<any>;
+  [x: string]: any;
+  callbackRef?: (arg: React.MutableRefObject<any>) => void;
+}
+
+const SelectionBox: React.FC<{
   /**
    * 設定是否多選
    */
@@ -16,7 +70,7 @@ interface SelectionBoxProps {
   /**
    * 設定選項
    */
-  options: {
+  options?: {
     value: string;
     label: string;
     /**
@@ -24,6 +78,24 @@ interface SelectionBoxProps {
      */
     isFixed?: boolean;
   }[];
+  /**
+   * 設定選項來源為api，如果有設定options，則以options為主
+   */
+  referApi?: {
+    /**
+     * 查詢對應的KEY, VALUE欄位
+     */
+    valueName: string;
+    labelName: string;
+    /**
+     * label查詢的api
+     */
+    api?: string;
+    /**
+     * label查詢的api的初始參數
+     */
+    defaultParameters?: object;
+  };
   /**
    * 判斷是否可視 初始值為true
    */
@@ -100,9 +172,7 @@ interface SelectionBoxProps {
 
   [x: string]: any;
   callbackRef?: (arg: React.MutableRefObject<any>) => void;
-}
-
-const SelectionBox: React.FC<SelectionBoxProps> = forwardRef(
+}> = forwardRef(
   (
     {
       visible,
@@ -115,6 +185,7 @@ const SelectionBox: React.FC<SelectionBoxProps> = forwardRef(
       value,
       handleValidation,
       options,
+      referApi,
       multiple,
       placeholder,
       result,
@@ -148,6 +219,7 @@ const SelectionBox: React.FC<SelectionBoxProps> = forwardRef(
             defaultValue={defaultValue}
             value={value}
             options={options}
+            referApi={referApi}
             handleValidation={handleValidation}
             multiple={multiple}
             placeholder={placeholder}
@@ -164,6 +236,7 @@ const SelectionBox: React.FC<SelectionBoxProps> = forwardRef(
             defaultValue={defaultValue}
             value={value}
             options={options}
+            referApi={referApi}
             handleValidation={handleValidation}
             multiple={multiple}
             placeholder={placeholder}
@@ -179,6 +252,7 @@ const SelectionBox: React.FC<SelectionBoxProps> = forwardRef(
             defaultValue={defaultValue}
             value={value}
             options={options}
+            referApi={referApi}
             handleValidation={handleValidation}
             multiple={multiple}
             placeholder={placeholder}
@@ -247,4 +321,4 @@ function getSelectionToData(selectionList, multiple) {
 }
 
 export { SelectionBox, getSelectionFromData, getSelectionToData };
-export type { SelectionBoxProps };
+export type { SelectionBoxProps, option };
