@@ -16,7 +16,7 @@ export const Form: React.FC<{
   /**
    * 作業資料的key
    */
-  dataKey: object;
+  dataKey: string[];
   /**
    * 判斷個體作業還是群體作業
    */

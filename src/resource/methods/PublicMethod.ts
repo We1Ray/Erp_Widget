@@ -1,5 +1,8 @@
+import axios from "axios";
 import moment from "moment";
+import { DependencyList } from "react";
 
+// const CENTER_IP = "http://10.1.200.131:8080";
 const CENTER_IP = "http://localhost:8080";
 const CENTER_FACTORY = "DS";
 
@@ -139,6 +142,27 @@ export default new (class PublicMethod {
       console.log(error);
     }
   }
+
+  async getTxid() {
+    try {
+      let param = {
+        datasource: "vmdb01dsod",
+        txmode: true,
+        txcreate: true,
+      };
+      let txid = "";
+      await axios
+        .post("http://10.1.1.70:8888/ws/common/tx", param)
+        .then((res) => (txid = res.data.txid))
+        .catch((error) => {
+          console.log(error);
+        });
+      return txid;
+    } catch (error) {
+      console.log("EROOR: PublicMethod.getTxid");
+      console.log(error);
+    }
+  }
   /**
    * 給於兩個陣列，比較兩陣列若相同則回傳True 不同為false
    */
@@ -161,6 +185,7 @@ export default new (class PublicMethod {
     }
     return true;
   }
+
   /**
    * 判斷兩個陣列裡的項目(不比較順序)
    */
@@ -177,6 +202,19 @@ export default new (class PublicMethod {
       return true;
     }
   }
+
+  mobileLogout() {
+    const isMobile = "ontouchstart" in window;
+    if (isMobile) {
+      (window as any).account.postMessage("logout");
+    }
+  }
 })();
 
+interface hooks {
+  effect: () => void;
+  deps?: DependencyList;
+}
+
 export { CENTER_IP, CENTER_FACTORY };
+export type { hooks };

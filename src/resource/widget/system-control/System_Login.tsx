@@ -13,15 +13,17 @@ import "./System.scss";
 interface Props {
   system_uid: string;
 }
-export const System: React.FC<Props> = ({ system_uid, ...props }) => {
+export const System_Login: React.FC<Props> = ({ system_uid, ...props }) => {
   return (
     <SystemProvider>
-      <SystemContent system_uid={system_uid}>{props.children}</SystemContent>
+      <System_Login_Content system_uid={system_uid}>
+        {props.children}
+      </System_Login_Content>
     </SystemProvider>
   );
 };
 
-const SystemContent: React.FC<Props> = ({ system_uid, ...props }) => {
+const System_Login_Content: React.FC<Props> = ({ system_uid, ...props }) => {
   const { System, SystemDispatch } = useContext(SystemContext);
   const [location, setLocation] = useState("");
   const [tokenLoad, setTokenLoad] = useState(false);
@@ -84,11 +86,37 @@ const SystemContent: React.FC<Props> = ({ system_uid, ...props }) => {
   }
 
   async function initCheckToken() {
-    if (SystemFunc.getUser_Token()) {
+    if (window.location.href.split("mt=").length > 1) {
+      CallApi.ExecuteApi(
+        CENTER_FACTORY,
+        CENTER_IP + "/public/get_ticket_granting_cookie",
+        { access_token: window.location.href.split("mt=")[1], isMobile: "Y" }
+      )
+        .then((res) => {
+          if (PublicMethod.checkValue(res.data)) {
+            SystemFunc.setUser_Token(window.location.href.split("mt=")[1]);
+            SystemDispatch({
+              type: "token",
+              value: window.location.href.split("mt=")[1],
+            });
+            SystemDispatch({ type: "userstate", value: "login" });
+            SystemDispatch({ type: "isMobile", value: true });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        })
+        .finally(() => {
+          setTokenLoad(true);
+        });
+    } else if (SystemFunc.getUser_Token()) {
       await CallApi.ExecuteApi(
         CENTER_FACTORY,
         CENTER_IP + "/public/get_ticket_granting_cookie",
-        { access_token: SystemFunc.getUser_Token() }
+        {
+          access_token: SystemFunc.getUser_Token(),
+          isMobile: SystemFunc.getUser_Token().indexOf("M-") == 0 ? "Y" : "N",
+        }
       )
         .then((res) => {
           if (PublicMethod.checkValue(res.data)) {
@@ -127,7 +155,11 @@ const SystemContent: React.FC<Props> = ({ system_uid, ...props }) => {
           CallApi.ExecuteApi(
             CENTER_FACTORY,
             CENTER_IP + "/public/get_ticket_granting_cookie",
-            { access_token: SystemFunc.getUser_Token() }
+            {
+              access_token: SystemFunc.getUser_Token(),
+              isMobile:
+                SystemFunc.getUser_Token().indexOf("M-") == 0 ? "Y" : "N",
+            }
           )
             .then((res) => {
               if (PublicMethod.checkValue(res.data)) {

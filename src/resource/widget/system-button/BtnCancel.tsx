@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import { Button } from "reactstrap";
 import { SystemContext } from "../system-control/SystemContext";
 import {
@@ -7,6 +7,7 @@ import {
   STATUS,
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
+import useStatus from "../../methods/useStatus";
 /**
  * BtnCancel 取消按鈕，按下後會改變狀態為Read
  */
@@ -34,7 +35,7 @@ export const BtnCancel: React.FC<{
   const { status, send } = useContext(statusContext);
   const [CancelDisable, setCancelDisable] = useState(true);
 
-  useEffect(() => {
+  useStatus(() => {
     switch (status.value) {
       case STATUS.CREATE:
         setCancelDisable(false);
@@ -55,7 +56,7 @@ export const BtnCancel: React.FC<{
         setCancelDisable(true);
         break;
     }
-  }, [status]);
+  });
 
   async function buttonClick() {
     if (onClick) {

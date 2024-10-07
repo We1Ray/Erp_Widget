@@ -10,6 +10,7 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
+import useSysBtnEnable from "./hooks/useSysBtnEnable";
 
 // const make_cols = refstr => {
 //     let o = [],
@@ -80,7 +81,7 @@ export const BtnExcelImport: React.FC<{
   const hiddenFileInput = useRef(null);
 
   const handleClick = async (event: any) => {
-    await onClick();
+    if (onclick) await onClick();
     await hiddenFileInput.current.click();
   };
 
@@ -102,7 +103,7 @@ export const BtnExcelImport: React.FC<{
     return disable;
   }
 
-  useLatest(
+  useSysBtnEnable(
     (latest) => {
       async function checkEnable() {
         try {
@@ -150,15 +151,7 @@ export const BtnExcelImport: React.FC<{
       }
       checkEnable();
     },
-    [
-      JSON.stringify(Component.status),
-      JSON.stringify(Component.loading),
-      JSON.stringify(Program.selectedData),
-      Program.loading,
-      Program.individual,
-      status,
-      importPermission,
-    ]
+    [importPermission]
   );
 
   function handleFile(e) {

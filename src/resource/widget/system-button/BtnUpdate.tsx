@@ -11,6 +11,8 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
+import useSysBtnAuth from "./hooks/useSysBtnAuth.tsx";
+import useSysBtnEnable from "./hooks/useSysBtnEnable";
 
 /**
  * BtnUpdate 更新按鈕，按下後會改變狀態讓資料更新
@@ -77,7 +79,7 @@ export const BtnUpdate: React.FC<{
   const [updatePermission, setUpdatePermission] = useState(false);
   const statusRef = useRef(status);
 
-  useEffect(() => {
+  useSysBtnAuth(() => {
     const flag = System.authority.filter(
       (permmission: any) =>
         permmission.program_code === Program.program_code &&
@@ -89,7 +91,7 @@ export const BtnUpdate: React.FC<{
     } else {
       disable(false);
     }
-  }, [System.authority, Program.program_code, disableFilter]);
+  }, [disableFilter]);
 
   async function disable(permission: boolean) {
     try {
@@ -104,7 +106,7 @@ export const BtnUpdate: React.FC<{
     }
   }
 
-  useLatest(
+  useSysBtnEnable(
     (latest) => {
       async function checkEnable() {
         try {
@@ -152,15 +154,7 @@ export const BtnUpdate: React.FC<{
       }
       checkEnable();
     },
-    [
-      JSON.stringify(Component.status),
-      JSON.stringify(Component.loading),
-      JSON.stringify(Program.selectedData),
-      Program.loading,
-      Program.individual,
-      status,
-      updatePermission,
-    ]
+    [updatePermission]
   );
 
   useEffect(() => {

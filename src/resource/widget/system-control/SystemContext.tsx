@@ -16,12 +16,50 @@ const SystemInitialState = {
   userstate: "",
   mustlogin: false,
   lang: "TW",
-  localization: [],
+  localization: {},
   getLocalization: (source: string, word: string, language = "") => {
     return "";
   },
   authority: [],
+  isMobile: false,
 };
+
+type SystemAction =
+  | { type: "token"; value: string }
+  | { type: "system_uid"; value: string }
+  | { type: "factory"; value: { uid: string; name: string; ip: string } }
+  | {
+      type: "system_info";
+      value: {
+        system_uid: string;
+        system_name: string;
+        system_desc: string;
+      };
+    }
+  | { type: "userstate"; value: string }
+  | { type: "mustlogin"; value: boolean }
+  | { type: "lang"; value: string }
+  | {
+      type: "localization";
+      value: {
+        [language: string]: { [source: string]: { [word: string]: string } };
+      };
+    }
+  | {
+      type: "authority";
+      value: {
+        is_open: string;
+        program_uid: string;
+        system_uid: string;
+        program_code: string;
+        program_name: string;
+        function_uid: string;
+        function_name: string;
+        function_desc: string;
+        function_code: string;
+      }[];
+    }
+  | { type: "isMobile"; value: boolean };
 
 interface SystemProps {
   System: {
@@ -64,7 +102,9 @@ interface SystemProps {
     /**
      * 語系表
      */
-    localization: any[];
+    localization: {
+      [language: string]: { [source: string]: { [word: string]: string } };
+    };
     /**
      * 輸入來源、字元、語言取得對應的語系顯示值
      */
@@ -76,15 +116,32 @@ interface SystemProps {
     /**
      * 使用者權限
      */
-    authority: any[];
+    authority: {
+      is_open: string;
+      program_uid: string;
+      system_uid: string;
+      program_code: string;
+      program_name: string;
+      function_uid: string;
+      function_name: string;
+      function_desc: string;
+      function_code: string;
+    }[];
+    isMobile: boolean;
   };
-  SystemDispatch?: any;
+  SystemDispatch?: React.Dispatch<SystemAction>;
 }
 
 const SystemContext = React.createContext<SystemProps>({
   System: SystemInitialState,
 });
-function SystemProvider(props) {
+function SystemProvider(props: {
+  children:
+    | boolean
+    | React.ReactChild
+    | React.ReactFragment
+    | React.ReactPortal;
+}) {
   const [System, SystemDispatch] = useReducer(
     SystemReducer,
     SystemInitialState
@@ -96,7 +153,14 @@ function SystemProvider(props) {
   );
 }
 
-function checkWord(localization, source, word, language) {
+function checkWord(
+  localization: {
+    [language: string]: { [source: string]: { [word: string]: string } };
+  },
+  source: string,
+  word: string,
+  language: string
+) {
   if (PublicMethod.checkValue(language)) {
     if (localization[language]) {
       if (localization[language][source]) {
@@ -182,6 +246,8 @@ const SystemReducer = (state, action) => {
       };
     case "authority":
       return { ...state, authority: action.value };
+    case "isMobile":
+      return { ...state, isMobile: action.value };
     default:
       return state;
   }

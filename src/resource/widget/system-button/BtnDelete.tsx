@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useContext } from "react";
 import swal from "sweetalert";
 import CallApi from "../../api/CallApi";
 import { Button } from "reactstrap";
@@ -10,7 +10,9 @@ import {
   STATUS,
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
-import useLatest from "../../methods/useLatest";
+import useSysBtnEnable from "./hooks/useSysBtnEnable";
+import useSysBtnAuth from "./hooks/useSysBtnAuth.tsx";
+import useStatus from "../../methods/useStatus";
 
 /**
  * BtnDelete 刪除按鈕，按下後會改變狀態刪除資料
@@ -80,7 +82,7 @@ export const BtnDelete: React.FC<{
   const [deleteDisable, setDeleteDisable] = useState(true);
   const [deletePermission, setDeletePermission] = useState(false);
 
-  useEffect(() => {
+  useSysBtnAuth(() => {
     const flag = System.authority.filter(
       (permmission: any) =>
         permmission.program_code === Program.program_code &&
@@ -92,7 +94,7 @@ export const BtnDelete: React.FC<{
     } else {
       disable(false);
     }
-  }, [System.authority, Program.program_code, disableFilter]);
+  }, [disableFilter]);
 
   async function disable(permission: boolean) {
     try {
@@ -107,7 +109,7 @@ export const BtnDelete: React.FC<{
     }
   }
 
-  useLatest(
+  useSysBtnEnable(
     (latest) => {
       async function checkEnable() {
         try {
@@ -184,19 +186,10 @@ export const BtnDelete: React.FC<{
       }
       checkEnable();
     },
-    [
-      JSON.stringify(Component.status),
-      JSON.stringify(Component.loading),
-      JSON.stringify(Program.selectedData),
-      JSON.stringify(Program.selectedMultiData),
-      Program.individual,
-      Program.loading,
-      status,
-      deletePermission,
-    ]
+    [deletePermission]
   );
 
-  useEffect(() => {
+  useStatus(() => {
     const deleteStatus = async () => {
       try {
         if (status.matches(STATUS.DELETE)) {
@@ -212,7 +205,7 @@ export const BtnDelete: React.FC<{
       }
     };
     deleteStatus();
-  }, [status]);
+  });
 
   async function onDelete() {
     let flag = true;

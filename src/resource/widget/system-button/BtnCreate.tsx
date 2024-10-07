@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, { useState, useContext, useRef } from "react";
 import swal from "sweetalert";
 import CallApi from "../../api/CallApi";
 import { Button } from "reactstrap";
@@ -10,7 +10,9 @@ import {
 } from "../system-control/ProgramContext";
 import { ComponentContext } from "../system-control/ComponentContext";
 import PublicMethod from "../../methods/PublicMethod";
-import useLatest from "../../methods/useLatest";
+import useStatus from "../../methods/useStatus";
+import useSysBtnAuth from "./hooks/useSysBtnAuth.tsx";
+import useSysBtnEnable from "./hooks/useSysBtnEnable";
 /**
  * BtnCreate 新增按鈕，按下後會改變狀態讓欄位可新增
  */
@@ -76,7 +78,7 @@ export const BtnCreate: React.FC<{
   const [createPermission, setCreatePermission] = useState(false);
   const statusRef = useRef(status);
 
-  useEffect(() => {
+  useSysBtnAuth(() => {
     const flag = System.authority.filter(
       (permmission: any) =>
         permmission.program_code === Program.program_code &&
@@ -88,7 +90,7 @@ export const BtnCreate: React.FC<{
     } else {
       disable(false);
     }
-  }, [System.authority, Program.program_code, disableFilter]);
+  }, [disableFilter]);
 
   async function disable(permission: boolean) {
     try {
@@ -103,7 +105,7 @@ export const BtnCreate: React.FC<{
     }
   }
 
-  useLatest(
+  useSysBtnEnable(
     (latest) => {
       async function checkEnable() {
         try {
@@ -144,20 +146,12 @@ export const BtnCreate: React.FC<{
       }
       checkEnable();
     },
-    [
-      JSON.stringify(Component.status),
-      JSON.stringify(Component.loading),
-      JSON.stringify(Program.selectedData),
-      Program.individual,
-      Program.loading,
-      status,
-      createPermission,
-    ]
+    [createPermission]
   );
 
-  useEffect(() => {
+  useStatus(() => {
     onCreate();
-  }, [status]);
+  });
 
   async function onCreate() {
     try {

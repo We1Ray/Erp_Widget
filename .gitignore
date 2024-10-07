@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/node_modules 晚上9.08.24
 
 # testing
 /coverage

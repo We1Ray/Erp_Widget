@@ -10,6 +10,16 @@ const ComponentInitialState = {
   selectedData: {},
   selectedMultiData: [],
 };
+
+type ComponentAction =
+  | { type: "status"; value: any }
+  | { type: "loading"; value: any }
+  | { type: "selectedData"; value: any }
+  | {
+      type: "selectedMultiData";
+      value: any;
+    };
+
 const ComponentContext = React.createContext<{
   Component: {
     /**
@@ -27,9 +37,9 @@ const ComponentContext = React.createContext<{
     /**
      *所有作業多選的資料
      */
-    selectedMultiData: any[];
+    selectedMultiData: any;
   };
-  ComponentDispatch?: any;
+  ComponentDispatch?: React.Dispatch<ComponentAction>;
 }>({
   Component: ComponentInitialState,
 });

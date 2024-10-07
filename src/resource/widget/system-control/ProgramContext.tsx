@@ -6,7 +6,7 @@ import PublicMethod from "../../methods/PublicMethod";
 const ProgramInitialState = {
   program_code: "",
   data: [],
-  dataKey: {},
+  dataKey: [],
   selectedData: {},
   selectedMultiData: [],
   queryParameters: {},
@@ -23,6 +23,41 @@ const ProgramInitialState = {
   individual: false,
 };
 
+type ProgramAction =
+  | { type: "program_code"; value: string }
+  | { type: "data"; value: any[] }
+  | { type: "dataKey"; value: string[] }
+  | {
+      type: "selectedData";
+      value: any;
+    }
+  | { type: "selectedMultiData"; value: any[] }
+  | { type: "queryParameters"; value: object }
+  | { type: "updateParameters"; value: object }
+  | { type: "insertParameters"; value: object }
+  | { type: "changeData"; value: object }
+  | {
+      type: "validation";
+      value: {
+        query: any;
+        bind: any;
+        common: any;
+      };
+    }
+  | {
+      type: "loading";
+      value: "LOADING" | "SAVE" | "QUERY" | "READ" | "pageLoadSelectAll";
+    }
+  | {
+      type: "queryConditions";
+      value: {
+        value: string;
+        label: string;
+        isFixed: boolean;
+      }[];
+    }
+  | { type: "individual"; value: boolean };
+
 interface ProgramProps {
   Program: {
     /**
@@ -36,7 +71,7 @@ interface ProgramProps {
     /**
      * 資料的key
      */
-    dataKey: any;
+    dataKey: string[];
     /**
      * 選擇的單筆資料(若為多選擇為最後選的一筆)
      */
@@ -48,19 +83,19 @@ interface ProgramProps {
     /**
      * 給查詢API使用的參數
      */
-    queryParameters: any;
+    queryParameters: object;
     /**
      * 給更新API使用的參數
      */
-    updateParameters: any;
+    updateParameters: object;
     /**
      * 給新增API使用的參數
      */
-    insertParameters: any;
+    insertParameters: object;
     /**
      * 取得目前Binding欄位的異動資料
      */
-    changeData: any;
+    changeData: object;
     /**
      * 判斷目前是否可以儲存資料
      */
@@ -86,26 +121,29 @@ interface ProgramProps {
      */
     individual: boolean;
   };
-  ProgramDispatch?: any;
+  ProgramDispatch?: React.Dispatch<ProgramAction>;
 }
-const STATUS = {
-  READ: "READ",
-  QUERY: "QUERY",
-  CREATE: "CREATE",
-  UPDATE: "UPDATE",
-  CANCEL: "CANCEL",
-  DELETE: "DELETE",
-  SAVE: "SAVE",
-};
+enum STATUS {
+  READ = "READ",
+  QUERY = "QUERY",
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+  CANCEL = "CANCEL",
+  DELETE = "DELETE",
+  SAVE = "SAVE",
+}
 const ProgramContext = React.createContext<ProgramProps>({
   Program: ProgramInitialState,
 });
+
+// type statusAction =
+
 const statusContext = React.createContext<{
   /**
    * 作業的狀態，有 READ、QUERY、CREATE、UPDATE、DELETE、SAVE、CANCEL
    */
   status: any;
-  send?: any;
+  send?: (StatusAction: STATUS) => void;
   service?: any;
 }>({
   status: STATUS.READ,
@@ -131,7 +169,16 @@ function ProgramProvider(props: any) {
 const ProgramReducer = (state: any, action: any) => {
   switch (action.type) {
     case "program_code":
-      return { ...state, program_code: action.value, queryParameters: {} };
+      return {
+        ...state,
+        program_code: action.value,
+        queryParameters: {},
+        validation: {
+          query: {},
+          bind: {},
+          common: {},
+        },
+      };
     case "data":
       return { ...state, data: action.value };
     case "dataKey":

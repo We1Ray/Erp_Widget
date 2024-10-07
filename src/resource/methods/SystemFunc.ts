@@ -2,6 +2,24 @@ import axios from "axios";
 import PublicMethod from "./PublicMethod";
 
 class SystemFunc {
+  async asyncGetLoginTGC() {
+    try {
+      let tgc = "";
+      await axios
+        .get("https://cas.deanshoes.com:8443/cas/getldapinfo.jsp", {
+          withCredentials: true,
+        })
+        .then((res) => (tgc = res.data.tgc))
+        .catch((error) => {
+          console.log(error);
+        });
+      return tgc;
+    } catch (error) {
+      console.log("EROOR: SystemFunc.asyncGetLoginTGC");
+      console.log(error);
+    }
+  }
+
   getUser_Token() {
     try {
       return PublicMethod.checkValue(localStorage.getItem("access_token"))

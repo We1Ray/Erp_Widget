@@ -10,6 +10,9 @@ import {
 } from "../system-control/ProgramContext";
 import PublicMethod from "../../methods/PublicMethod";
 import useLatest from "../../methods/useLatest";
+import useSysBtnAuth from "./hooks/useSysBtnAuth.tsx";
+import useStatus from "../../methods/useStatus";
+import useSysBtnEnable from "./hooks/useSysBtnEnable";
 
 /**
  * BtnQuery 查詢按鈕，按下後會改變狀態讓資料更新
@@ -69,7 +72,7 @@ export const BtnQuery: React.FC<{
   const [queryDisable, setQueryDisable] = useState(true);
   const [queryPermission, setQueryPermission] = useState(false);
 
-  useEffect(() => {
+  useSysBtnAuth(() => {
     const flag = System.authority.filter(
       (permmission: any) =>
         permmission.program_code === Program.program_code &&
@@ -81,7 +84,7 @@ export const BtnQuery: React.FC<{
     } else {
       disable(false);
     }
-  }, [System.authority, Program.program_code, disableFilter]);
+  }, [disableFilter]);
 
   async function disable(permission: boolean) {
     try {
@@ -96,7 +99,7 @@ export const BtnQuery: React.FC<{
     }
   }
 
-  useLatest(
+  useSysBtnEnable(
     (latest) => {
       async function checkEnable() {
         try {
@@ -118,38 +121,38 @@ export const BtnQuery: React.FC<{
               }
             }
           }
-
-          if (status.matches(STATUS.READ) && !check) {
-            if (Program.loading === "READ") {
-              if (PublicMethod.checkValue(Program.validation.query)) {
-                if (Program.queryConditions !== undefined) {
-                  for (
-                    let index = 0;
-                    index < Program.queryConditions.length;
-                    index++
+          if (
+            status.matches(STATUS.READ) &&
+            !check &&
+            Program.loading === "READ"
+          ) {
+            if (PublicMethod.checkValue(Program.validation.query)) {
+              if (Program.queryConditions !== undefined) {
+                for (
+                  let index = 0;
+                  index < Program.queryConditions.length;
+                  index++
+                ) {
+                  if (
+                    Program.validation.query[
+                      Program.queryConditions[index].value
+                    ]
                   ) {
-                    if (
-                      Program.validation.query[
-                        Program.queryConditions[index].value
-                      ]
-                    ) {
-                      check = true;
-                    } else {
-                      check = !queryPermission;
-                    }
-                  }
-                } else {
-                  if (Program.validation.query) {
                     check = true;
+                    break;
                   } else {
                     check = !queryPermission;
                   }
                 }
               } else {
-                check = !queryPermission;
+                if (Program.validation.query) {
+                  check = true;
+                } else {
+                  check = !queryPermission;
+                }
               }
             } else {
-              check = true;
+              check = !queryPermission;
             }
           } else {
             check = true;
@@ -166,21 +169,15 @@ export const BtnQuery: React.FC<{
       checkEnable();
     },
     [
-      JSON.stringify(Component.status),
-      JSON.stringify(Component.loading),
-      JSON.stringify(Program.selectedData),
       JSON.stringify(Program.validation.query),
       JSON.stringify(Program.queryConditions),
-      Program.individual,
-      Program.loading,
-      status,
       queryPermission,
     ]
   );
 
-  useEffect(() => {
+  useStatus(() => {
     onQuery();
-  }, [status]);
+  });
 
   async function onQuery() {
     try {
